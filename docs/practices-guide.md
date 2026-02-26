@@ -592,12 +592,25 @@ public class PropertySourceDebugHook {
 
 **Note on Project Context**: The practices below reflect the discipline required to derive clear, accurate documentation from working code.
 
-### 1. Preconditions vs Runtime Validation
+### 1. Use Case Structure
 
 #### ✅ **Correct Approach**
-- **Preconditions**: Only system operational requirements
-  - "System is operational and database is accessible"
-  - "Application server is running"
+- **Description** (required, at the beginning): A brief summary of what the use case does, including the business value or interest (e.g., accurate records for billing, compliance, correspondence)
+- **Primary Actor**: Who initiates the use case
+- **Preconditions**, **Basic Flow**, **Alternative Flows**, **Exception Flows**, **Business Rules**
+- Focus on **actors**; omit the Stakeholders and Interests section (redundant—include business interest in the Description instead)
+- No Notes section at the end
+
+#### ❌ **Anti-Pattern**
+- Starting with User Story, Stakeholders and Interests, or other non-use-case elements
+- Omitting the Description
+- Redundant preconditions (e.g., "Application server is running" when "System is operational" already implies it)
+
+### 2. Preconditions vs Runtime Validation
+
+#### ✅ **Correct Approach**
+- **Preconditions**: Only essential system operational requirements; avoid redundancy
+  - "System is operational and database is accessible" (implies application server, etc.)
 - **Runtime Validation**: Feature flags, input validation, business rules
   - Checked in basic flow steps
   - Trigger alternative flows when conditions fail
@@ -615,7 +628,7 @@ public class PropertySourceDebugHook {
   - System is operational and database is accessible  # CORRECT - system requirement
 ```
 
-### 2. Clean Basic Flows
+### 3. Clean Basic Flows
 
 #### ✅ **Correct Approach**
 - Describe only the happy path
@@ -632,7 +645,7 @@ public class PropertySourceDebugHook {
 2. **System validates feature flag**: The system checks if the "create-transaction" feature flag is enabled.
 ```
 
-### 3. Alternative Flow Triggers
+### 4. Alternative Flow Triggers
 
 #### ✅ **Correct Approach**
 - Alternative flows contain their own trigger descriptions
@@ -650,7 +663,7 @@ public class PropertySourceDebugHook {
   4. System returns HTTP 403 Forbidden with error message
 ```
 
-### 4. Exception Flows vs Alternative Flows
+### 5. Exception Flows vs Alternative Flows
 
 #### ✅ **Correct Approach**
 - **Alternative Flows**: Specific validation failures or business logic exceptions during execution
@@ -669,15 +682,18 @@ public class PropertySourceDebugHook {
 - **Database Connection Lost**: If database connection fails during transaction persistence
 ```
 
-### 5. Logical Separation of Concerns
+### 6. Logical Separation of Concerns
 
 #### ✅ **Correct Structure**
-- **Preconditions**: What must be true before use case starts
+- **Description**: What the use case does and why it matters (business value)
+- **Primary Actor**: Who initiates the use case
+- **Preconditions**: What must be true before use case starts (essential only; no redundancy)
 - **Basic Flow**: Clean, linear happy path
 - **Alternative Flows**: Specific failure scenarios with clear triggers
 - **Exception Flows**: Only execution exceptions
+- **Business Rules**: Domain rules and constraints
 
-### 6. Intent vs Implementation Details
+### 7. Intent vs Implementation Details
 
 #### ✅ **Correct Approach**
 - Describe **intent** (what the actor wants), not UI mechanics (clicks, buttons, form fields)
@@ -720,6 +736,9 @@ public class PropertySourceDebugHook {
 5. **UI details instead of intent** → Describe what the actor wants (e.g., "requests to add product to basket"), not how they do it (e.g., "clicks Add to Basket")
 6. **Implementation details** → Avoid cookies, session IDs, "persists," "redirects," technical field names; use plain English a shopper would understand
 7. **Rare path in basic flow** → Put the most common path in basic flow; "creates basket" when shopper usually has one belongs in an alternative flow
+8. **Stakeholders and Interests section** → Redundant; focus on actors; include business value in the Description
+9. **Notes section at end** → Omit
+10. **Redundant preconditions** → Consolidate (e.g., "application server running" is implied by "system operational")
 
 ### BDD Scenarios
 1. **Technical implementation details** → Focus on business intent
@@ -748,12 +767,15 @@ public class PropertySourceDebugHook {
 - [ ] Key flows have both physical (request/runtime) and logical (domain entity) sequence diagrams (see [Logical vs Physical Sequence Diagrams](#2-logical-vs-physical-sequence-diagrams))
 
 ### Use Case Specifications
-- [ ] Preconditions contain only system operational requirements (see [Preconditions vs Runtime Validation](#1-preconditions-vs-runtime-validation))
-- [ ] Basic flow is clean and linear without conditional logic (see [Clean Basic Flows](#2-clean-basic-flows))
-- [ ] Alternative flows have clear triggers with step references (see [Alternative Flow Triggers](#3-alternative-flow-triggers))
-- [ ] Exception flows contain only execution exceptions (see [Exception Flows vs Alternative Flows](#4-exception-flows-vs-alternative-flows))
+- [ ] Description at beginning; includes business value (see [Use Case Structure](#1-use-case-structure))
+- [ ] Primary Actor specified; no Stakeholders and Interests section (see [Use Case Structure](#1-use-case-structure))
+- [ ] No Notes section at end (see [Use Case Structure](#1-use-case-structure))
+- [ ] Preconditions contain only essential system operational requirements; no redundancy (see [Preconditions vs Runtime Validation](#2-preconditions-vs-runtime-validation))
+- [ ] Basic flow is clean and linear without conditional logic (see [Clean Basic Flows](#3-clean-basic-flows))
+- [ ] Alternative flows have clear triggers with step references (see [Alternative Flow Triggers](#4-alternative-flow-triggers))
+- [ ] Exception flows contain only execution exceptions (see [Exception Flows vs Alternative Flows](#5-exception-flows-vs-alternative-flows))
 - [ ] No redundant information with other documentation (see [DRY](#3-dry-dont-repeat-yourself))
-- [ ] Steps describe intent, not UI mechanics (see [Intent vs Implementation Details](#6-intent-vs-implementation-details))
+- [ ] Steps describe intent, not UI mechanics (see [Intent vs Implementation Details](#7-intent-vs-implementation-details))
 - [ ] Plain English for the actor; no implementation details (cookies, "persists," "redirects," etc.)
 
 ### BDD Scenarios
